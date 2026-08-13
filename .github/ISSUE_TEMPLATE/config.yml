@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question, idea, or feedback
+    url: https://github.com/CourageToChange/LocalPhotoPDF/discussions
+    about: For anything that is not a bug or a specific feature request — questions about how it works, general feedback, or thinking out loud.
+  - name: Report a security vulnerability (private)
+    url: https://github.com/CourageToChange/LocalPhotoPDF/security/advisories/new
+    about: Please report security problems privately, so they can be fixed before they are public. Do not open a public issue.

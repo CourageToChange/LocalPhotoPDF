@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.ico binary
+
+# Preserve the upstream NSIS licence text verbatim, including its spacing.
+licenses/NSIS-COPYING.txt -whitespace

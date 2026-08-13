@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  build-release:
+    name: Build and publish release
+    runs-on: windows-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Validate version tag
+        id: version
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Release tags must have the form v1.2.3. Received: ${{ github.ref_name }}"
+          }
+          "value=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Install pinned NSIS
+        shell: pwsh
+        run: choco install nsis --version=3.12.0 --yes --no-progress --allow-downgrade
+
+      - name: Build release packages
+        shell: pwsh
+        run: .\scripts\Build-Release.ps1 -Version '${{ steps.version.outputs.value }}'
+
+      - name: Smoke test portable app and installer lifecycle
+        shell: pwsh
+        run: .\scripts\Test-ReleaseArtifacts.ps1 -Version '${{ steps.version.outputs.value }}'
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: LocalPhotoPDF-${{ steps.version.outputs.value }}-release
+          path: |
+            artifacts/*.zip
+            artifacts/*.exe
+            artifacts/*.txt
+            artifacts/*.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attest release artifacts
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            artifacts/*.zip
+            artifacts/*.exe
+            artifacts/*.txt
+            artifacts/*.json
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $files = Get-ChildItem -LiteralPath .\artifacts -File |
+            Where-Object { $_.Extension -in @('.zip', '.exe', '.txt', '.json') } |
+            Sort-Object Name |
+            ForEach-Object { $_.FullName }
+          if ($files.Count -lt 4) {
+            throw 'Expected portable ZIP, installer, checksum file, and SBOM.'
+          }
+          gh release create '${{ github.ref_name }}' @files `
+            --verify-tag `
+            --generate-notes `
+            --title "LocalPhotoPDF ${{ steps.version.outputs.value }}"

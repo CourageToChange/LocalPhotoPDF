@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore locked dependencies
+        run: dotnet restore .\LocalPhotoPDF.sln --locked-mode --runtime win-x64
+
+      - name: Build
+        run: dotnet build .\LocalPhotoPDF.sln --configuration Release --no-restore
+
+      - name: Test
+        run: >-
+          dotnet test .\LocalPhotoPDF.sln
+          --configuration Release
+          --no-build
+          --no-restore
+          --logger "trx;LogFileName=tests.trx"
+          --results-directory .\artifacts\test-results
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-results
+          path: artifacts/test-results/*.trx
+          if-no-files-found: warn
+          retention-days: 14
+
+  package-smoke:
+    name: Package and installer smoke test
+    needs: build-and-test
+    runs-on: windows-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Install pinned NSIS
+        shell: pwsh
+        run: choco install nsis --version=3.12.0 --yes --no-progress
+
+      - name: Build release artifacts
+        shell: pwsh
+        run: .\scripts\Build-Release.ps1 -Version 1.0.0
+
+      - name: Test portable app and installer lifecycle
+        shell: pwsh
+        run: .\scripts\Test-ReleaseArtifacts.ps1 -Version 1.0.0

@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <!--
+      Always on, never gated on $(CI).
+
+      This used to read Condition="'$(CI)' == 'true'". Build-Release.ps1 does not set CI, so on a
+      local release build the source paths were never remapped and the compiled binary embedded
+      the full build path - including the developer's Windows username and their folder layout.
+      A security audit found the shipped .exe carrying
+      C:\Users\<name>\...\LocalPhotoPDF.Core.pdb, in both the ZIP and the installer.
+
+      An unsigned public release that quietly names the machine it was built on is a privacy leak
+      that no checksum or attestation catches, because both faithfully attest the leaking file.
+    -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>moderate</NuGetAuditLevel>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

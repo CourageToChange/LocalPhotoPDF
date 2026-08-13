@@ -1,0 +1,22 @@
+# Build output
+artifacts/
+tmp/
+**/bin/
+**/obj/
+TestResults/
+
+# IDE and user-specific files
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Internal review notes. Kept outside the repository: they quote private
+# correspondence and are not part of the published project.
+REVIEW-*.md
+*-REVIEW-*.md

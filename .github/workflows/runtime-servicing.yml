@@ -1,0 +1,33 @@
+name: Runtime servicing
+
+on:
+  schedule:
+    - cron: '17 5 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-runtime:
+    name: Check bundled .NET servicing level
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore locked runtime
+        run: dotnet restore .\LocalPhotoPDF.sln --locked-mode --runtime win-x64
+
+      - name: Check SDK and runtime servicing
+        shell: pwsh
+        run: .\scripts\Test-RuntimeServicing.ps1

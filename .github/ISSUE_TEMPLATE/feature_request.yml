@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest something LocalPhotoPDF should be able to do.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome, including small ones.
+
+        Two things worth knowing before you write, so nothing comes as a surprise later:
+
+        - **LocalPhotoPDF is offline by design.** It has no network code at all — no account, no
+          telemetry, no update check, no cloud storage. Anything that requires the app to talk to
+          the internet is very unlikely to be accepted, however useful it might be.
+        - **It is a Windows desktop app** (x64), built on WPF. macOS, Linux and mobile are out of
+          scope.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: >
+        Describe the situation, not the solution. Knowing the underlying problem often leads to a
+        better answer than the one either of us thought of first.
+      placeholder: I scan receipts and end up with 30 separate files. I want one PDF per month, and...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like it to do?
+      placeholder: A button that groups the selected photos by the date they were taken.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What do you do at the moment?
+      description: Any workaround you use today, or another app that does this well.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Would you like to build it?
+      description: Entirely optional, and a "no" costs nothing.
+      options:
+        - label: I would be interested in opening a pull request for this
+          required: false
