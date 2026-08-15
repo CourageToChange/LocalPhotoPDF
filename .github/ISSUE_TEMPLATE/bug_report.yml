@@ -12,7 +12,7 @@ body:
         is public.
 
         **Never attach a photo that you would not want to be public.** Issues are visible to
-        everyone. If a specific image causes the problem, describe it — its format, rough size and
+        everyone. If a specific image causes the problem, describe it instead: format, rough size and
         pixel dimensions. Please don't upload it.
 
   - type: textarea
@@ -73,7 +73,7 @@ body:
       label: What kind of photos were involved?
       description: >
         Format (JPEG, PNG, HEIC, TIFF...), roughly how many, roughly how large, and where they came
-        from — phone, camera, screenshots, scans. HEIC, WebP, AVIF and RAW rely on codecs supplied
+        from: phone, camera, screenshots, scans. HEIC, WebP, AVIF and RAW rely on codecs supplied
         by Windows, so this often matters.
       placeholder: About 40 HEIC photos straight off an iPhone, 3-4 MB each.
 

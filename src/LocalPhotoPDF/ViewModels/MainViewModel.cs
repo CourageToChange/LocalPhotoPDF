@@ -45,6 +45,20 @@ internal sealed class MainViewModel : ObservableObject, IDisposable
     private CancellationTokenSource? _importCancellation;
     private bool _isDisposed;
 
+    /// <summary>The version line and the update check shown along the bottom of the window.</summary>
+    public UpdateViewModel Update { get; }
+
+    /// <summary>
+    /// Asks before downloading anything, so an update is always a decision rather than a surprise.
+    /// </summary>
+    private static bool PromptToInstallUpdate(string question) =>
+        System.Windows.MessageBox.Show(
+            question + "\n\nLocalPhotoPDF will close while the update installs.",
+            "Update LocalPhotoPDF",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Question,
+            System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes;
+
     public MainViewModel(
         IImageImportService imageImportService,
         IPdfGenerationService pdfGenerationService,
@@ -57,6 +71,10 @@ internal sealed class MainViewModel : ObservableObject, IDisposable
         _shellService = shellService ?? throw new ArgumentNullException(nameof(shellService));
         _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
+        // Kept as its own view model rather than folded in here: this class is already the largest
+        // file in the project, and the update flow shares none of its state.
+        Update = new UpdateViewModel(confirmInstall: PromptToInstallUpdate);
 
         _pageSize = Enum.IsDefined(settings.PageSize) ? settings.PageSize : PdfPageSize.A4;
         _margin = Enum.IsDefined(settings.Margin) ? settings.Margin : PdfMargin.FiveMillimeters;

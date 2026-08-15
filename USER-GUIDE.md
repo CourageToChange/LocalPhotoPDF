@@ -1,6 +1,6 @@
 # LocalPhotoPDF User Guide
 
-Last updated: 2026-08-09
+Last updated: 2026-08-15
 
 LocalPhotoPDF turns photos on your Windows PC into one PDF. Everything happens on your computer. You do not need an account or an internet connection.
 
@@ -70,9 +70,28 @@ A problem with one file should not close the app. Read the on-screen message, re
 - Press **Delete** to remove the selected photo.
 - Press **Escape** to cancel PDF creation safely.
 
+## Keeping it up to date
+
+Along the bottom of the window you will see the version you are running, and a **Check for updates** button.
+
+Nothing happens until you press it. LocalPhotoPDF does not check when it starts, does not check on a timer, and does not check in the background, so it makes no internet request at all unless you ask.
+
+When you press it:
+
+1. It asks GitHub whether a newer version has been published, and tells you what it found.
+2. If there is one, it asks before downloading, and says how large the download is.
+3. After downloading, it checks the file against the checksum published with that release. If they do not match it throws the file away, tells you, and runs nothing.
+4. The button then reads **Install and restart**. Press it and LocalPhotoPDF closes so the installer can replace it. Your page size, margin and quality settings are kept.
+
+Windows may show a blue "Windows protected your PC" panel when the installer runs, because these builds are not code-signed. Choose **More info**, then **Run anyway**. You can confirm you have the right file first by following [Verify a release](README.md#verify-a-release).
+
+You never have to use the button. Every version is on the [releases page](https://github.com/CourageToChange/LocalPhotoPDF/releases) and you can download and install it yourself instead.
+
 ## Privacy and cleanup
 
-The app does not upload photos, keep a recent-file history, or send telemetry. It only remembers your window size and your page, margin and quality choices.
+The app does not upload photos, keep a recent-file history, or send telemetry. It only remembers your window size and your page, margin and quality choices. The update button is the one thing that uses the internet, and only while you are pressing it.
+
+An update leaves the downloaded installer in your temporary files. The next time you check for updates the app clears it out, and Windows removes temporary files on its own too, so there is nothing you need to do.
 
 Uninstall LocalPhotoPDF from **Settings > Apps > Installed apps**. The uninstaller removes the installed program, shortcuts, and saved preferences. Portable users can remove the extracted folder manually. To remove portable-use preferences too, open File Explorer, paste `%LOCALAPPDATA%` into the address bar, press Enter, and delete the `LocalPhotoPDF` folder.
 

@@ -9,9 +9,11 @@ body:
 
         Two things worth knowing before you write, so nothing comes as a surprise later:
 
-        - **LocalPhotoPDF is offline by design.** It has no network code at all — no account, no
-          telemetry, no update check, no cloud storage. Anything that requires the app to talk to
-          the internet is very unlikely to be accepted, however useful it might be.
+        - **LocalPhotoPDF works offline.** Making a PDF never touches the network. The only
+          exception is the Check for updates button, which asks GitHub for the newest release
+          while you are pressing it and does nothing otherwise. There is no account, no telemetry
+          and no cloud storage. Anything that needs the app to talk to the internet on its own is
+          very unlikely to be accepted, however useful it might be.
         - **It is a Windows desktop app** (x64), built on WPF. macOS, Linux and mobile are out of
           scope.
 

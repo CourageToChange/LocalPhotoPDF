@@ -203,7 +203,12 @@ try {
             throw 'An existing LocalPhotoPDF installation was detected. Installer lifecycle smoke testing refused to overwrite it.'
         }
 
-        Invoke-CheckedProcess -FilePath $installerPath -ArgumentList @('/S')
+        # /FROMAPP is passed by the app's update button and makes the installer wait for the
+        # single-instance mutex instead of aborting the instant it finds it held. Exercised here
+        # because it had no coverage at all: not a unit test, and not this smoke test, which only
+        # ever ran /S. An untested switch on the update path is exactly where a silent regression
+        # would sit.
+        Invoke-CheckedProcess -FilePath $installerPath -ArgumentList @('/S', '/FROMAPP')
         $installedExecutable = Join-Path $installDirectory 'LocalPhotoPDF.exe'
         $uninstaller = Join-Path $installDirectory 'Uninstall.exe'
         foreach ($installedFile in @($installedExecutable, $uninstaller, $startMenuShortcut)) {

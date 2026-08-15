@@ -34,7 +34,7 @@ Do not add a dependency when the .NET or Windows platform already provides a cle
 ## Pull requests
 
 - Add or update tests for behaviour changes.
-- Keep the app offline and per-user unless a proposal has been discussed first.
+- Keep the app per-user, and keep it offline apart from the update check, unless a proposal has been discussed first.
 - Preserve cancellation, input limits, metadata removal, and atomic output behaviour.
 - Update [USER-GUIDE.md](USER-GUIDE.md) in the same change when visible labels or behaviour change.
 - Run the build and tests before opening the pull request.
@@ -58,7 +58,7 @@ not. Run `dotnet --list-sdks` to see what you have.
 
 **A NuGet audit error (`NU1901`–`NU1904`) on a dependency you did not touch.** Warnings are errors
 in this project and NuGet auditing is on, so a newly disclosed advisory against an existing
-dependency turns into a hard build failure — for you, and for CI, without anyone changing a line of
+dependency turns into a hard build failure, for you and for CI, without anyone changing a line of
 code. That strictness is deliberate: it means a vulnerable dependency cannot be ignored.
 
 To keep working locally while it is sorted out:
@@ -67,11 +67,11 @@ To keep working locally while it is sorted out:
 dotnet build .\LocalPhotoPDF.sln -c Release -p:WarningsNotAsErrors=NU1901%3BNU1902%3BNU1903%3BNU1904
 ```
 
-The `%3B` really is necessary — it is an escaped semicolon. Writing the list with plain semicolons
+The `%3B` really is necessary. It is an escaped semicolon. Writing the list with plain semicolons
 fails with `MSB1006: Property is not valid`, whether or not you quote it, because the shell splits
 the argument before MSBuild ever sees it.
 
-**Please open an issue rather than only working around it** — the real fix is bumping the
+**Please open an issue rather than only working around it.** The real fix is bumping the
 dependency, and the workaround must not be committed.
 
 ## Cutting a release
@@ -88,7 +88,7 @@ publish-time settings would never apply to them.
 It then scans the published executable and **fails the build** if it finds the build account's
 username or a user-profile path. Builds are deterministic and source paths are remapped, so a
 release should never carry the identity of the machine that produced it. Checksums and provenance
-attestation do not help here — they will faithfully attest a binary that leaks.
+attestation do not help here, because they will faithfully attest a binary that leaks.
 
 The release also fails when the pinned SDK or the bundled runtime packs fall behind their current
 security servicing level. If that stops you, bump `global.json` rather than skipping the check.

@@ -28,6 +28,7 @@ SetOverwrite on
 !define APP_UNINSTALL_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\LocalPhotoPDF"
 
 Var AppMutexHandle
+Var WaitForRunningApp
 
 Name "${APP_NAME} ${APP_VERSION}"
 Caption "${APP_NAME} Setup"
@@ -47,6 +48,7 @@ VIAddVersionKey /LANG=1033 "LegalCopyright" "Copyright (c) 2026 LocalPhotoPDF co
 
 !include "MUI2.nsh"
 !include "Sections.nsh"
+!include "FileFunc.nsh"
 
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_RUN "$INSTDIR\${APP_EXE}"
@@ -117,18 +119,44 @@ LangString DESC_SEC_DESKTOP ${LANG_ENGLISH} "Add a LocalPhotoPDF shortcut to you
 Function .onInit
     SetShellVarContext current
     StrCpy $INSTDIR "$LOCALAPPDATA\Programs\LocalPhotoPDF"
+
+    ; LocalPhotoPDF's own update button starts this installer and then closes itself, passing
+    ; /FROMAPP. Shutting a WPF application down is not instant: it saves settings, stops the
+    ; imaging thread, and only then releases the single-instance mutex. With a zero timeout
+    ; that was a race, and losing it aborted the update with "close LocalPhotoPDF and run setup
+    ; again" while LocalPhotoPDF was in the middle of closing. So when the app asked for this,
+    ; wait for it. When a person started setup by hand, do not wait: they can see their own
+    ; window and an unexplained pause would just look like a hang.
+    StrCpy $WaitForRunningApp 0
+    ${GetParameters} $R8
+    ClearErrors
+    ${GetOptions} $R8 "/FROMAPP" $R7
+    IfErrors +2
+    StrCpy $WaitForRunningApp 1
+
     Call AcquireAppMutex
 FunctionEnd
 
 Function AcquireAppMutex
+    StrCpy $R9 1
+    StrCmp $WaitForRunningApp 0 acquire_attempt
+    StrCpy $R9 60   ; 60 tries, 250 ms apart, so up to fifteen seconds
+
+    acquire_attempt:
     System::Call 'kernel32::CreateMutexW(p 0, i 0, w "${APP_MUTEX}") p.r0'
     StrCmp $0 0 mutex_failed
     System::Call 'kernel32::WaitForSingleObject(p r0, i 0) i.r1'
     StrCmp $1 0 mutex_acquired
     StrCmp $1 128 mutex_acquired
     System::Call 'kernel32::CloseHandle(p r0)'
-    StrCmp $1 258 mutex_exists
+    StrCmp $1 258 mutex_busy
     Goto mutex_failed
+
+    mutex_busy:
+    IntOp $R9 $R9 - 1
+    IntCmp $R9 0 mutex_exists mutex_exists
+    Sleep 250
+    Goto acquire_attempt
 
     mutex_acquired:
     StrCpy $AppMutexHandle $0

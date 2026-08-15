@@ -1,6 +1,6 @@
 # LocalPhotoPDF
 
-LocalPhotoPDF is a free, open-source Windows app that turns photos, in the order you put them in, into one PDF. Your photos stay on your PC: the app has no account, adverts, telemetry, or network features.
+LocalPhotoPDF is a free, open-source Windows app that turns photos, in the order you put them in, into one PDF. Your photos stay on your PC. There is no account, no adverts and no telemetry, and the only thing that ever uses the network is the update button, when you press it.
 
 I scan a lot of documents and keep them as PDFs, ready to upload whenever something asks for one. I didn't want to put them through a website every time, or install something that wanted an account first, so I made this instead. It opens, it does the one job, and nothing leaves the machine.
 
@@ -27,7 +27,17 @@ LocalPhotoPDF supports 64-bit Windows 11.
 - **Installer:** download `LocalPhotoPDF-Setup-<version>-win-x64.exe` from GitHub Releases and run it. Installation is only for your Windows account and does not require administrator access. The optional desktop shortcut is off by default.
 - **Portable:** download `LocalPhotoPDF-<version>-win-x64.zip`, extract it to a folder you control, and run `LocalPhotoPDF.exe`.
 
-No installer or app component starts with Windows, adds file associations, runs a background service, or checks for updates.
+No installer or app component starts with Windows, adds file associations, runs a background service, or checks for updates on its own.
+
+## Updating
+
+There is a **Check for updates** button along the bottom of the window. It does nothing until you press it: there is no timer, no check at startup and no background poll, so the app makes no network request unless you ask it to.
+
+Press it and the app asks GitHub for the newest published release. If there is one it tells you how big the download is and waits for you to say yes. What comes down is hashed and compared against the SHA-256 published with that release. A file that does not match is deleted and never run. Press the button a second time to install: the app closes so the installer can replace it, and your saved page size, margin and quality settings survive.
+
+Update downloads are accepted only from GitHub, only over HTTPS, and a redirect to any other host is refused rather than followed.
+
+If you would rather do it yourself, the [releases page](https://github.com/CourageToChange/LocalPhotoPDF/releases) has every version and you can install over the top of the old one. Nothing about the app changes if you never touch the button.
 
 ## Verify a release
 

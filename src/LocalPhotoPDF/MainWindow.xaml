@@ -23,6 +23,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="2,0,2,18">
@@ -497,5 +498,40 @@
                         AutomationProperties.Name="Cancel PDF creation" />
             </Grid>
         </Border>
+
+        <!-- Version and the update check. Nothing here runs on its own: no timer, no startup
+             check, no background poll. The application contacts the network only when someone
+             presses this button, which is what lets PRIVACY.md say what it says. -->
+        <Grid Grid.Row="4" Margin="2,12,2,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       VerticalAlignment="Center"
+                       FontSize="12"
+                       Style="{StaticResource MutedTextStyle}"
+                       Text="{Binding Update.VersionLabel}"
+                       AutomationProperties.Name="Installed version" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center"
+                           Margin="0,0,10,0"
+                           FontSize="12"
+                           Style="{StaticResource MutedTextStyle}"
+                           Text="{Binding Update.UpdateStatus}"
+                           Visibility="{Binding Update.HasUpdateStatus, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           AutomationProperties.LiveSetting="Polite" />
+
+                <Button MinWidth="150"
+                        Style="{StaticResource QuietButtonStyle}"
+                        Content="{Binding Update.UpdateButtonText}"
+                        Command="{Binding Update.UpdateCommand}"
+                        ToolTip="Ask GitHub whether a newer version has been released. Nothing is sent about you or your photos."
+                        AutomationProperties.Name="Check for updates"
+                        AutomationProperties.HelpText="Contacts GitHub once, only when you press this." />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
