@@ -43,9 +43,9 @@ Compare the displayed hash with the matching line in `SHA256SUMS.txt`. Tagged Gi
 
 You need Windows 11 x64, PowerShell 7, and [NSIS](https://nsis.sourceforge.io/) 3.12 or later if you want to build the installer.
 
-You also need the exact .NET SDK feature band pinned in [`global.json`](global.json) — currently **10.0.303**. `rollForward` is set to `latestPatch`, so any `10.0.3xx` SDK works, but `10.0.1xx`, `10.0.2xx` or `10.0.4xx` will fail immediately with an SDK resolution error rather than a useful message. Check what you have with `dotnet --list-sdks`, and get a matching one from [dotnet.microsoft.com/download](https://dotnet.microsoft.com/download/dotnet/10.0).
+You also need the exact .NET SDK feature band pinned in [`global.json`](global.json), currently **10.0.303**. `rollForward` is set to `latestPatch`, so any `10.0.3xx` SDK works, but `10.0.1xx`, `10.0.2xx` or `10.0.4xx` will fail immediately with an SDK resolution error rather than a useful message. Check what you have with `dotnet --list-sdks`, and get a matching one from [dotnet.microsoft.com/download](https://dotnet.microsoft.com/download/dotnet/10.0).
 
-Note that warnings are treated as errors here, including NuGet audit warnings. That is deliberate, but it means a newly disclosed advisory against a dependency can break the build for everyone until the dependency is bumped. If that happens to you, [`CONTRIBUTING.md`](CONTRIBUTING.md) explains the one-line local workaround — and please open an issue, because it needs fixing properly.
+Note that warnings are treated as errors here, including NuGet audit warnings. That is deliberate, but it means a newly disclosed advisory against a dependency can break the build for everyone until the dependency is bumped. If that happens to you, [`CONTRIBUTING.md`](CONTRIBUTING.md) explains the one-line local workaround, and please open an issue, because it needs fixing properly.
 
 ```powershell
 dotnet restore .\LocalPhotoPDF.sln --locked-mode --runtime win-x64
@@ -70,7 +70,7 @@ All of it is welcome, including from people who do not write code.
 - **A question, an idea, or general feedback** → [start a discussion](https://github.com/CourageToChange/LocalPhotoPDF/discussions).
 - **A security vulnerability** → please do **not** open a public issue. Use [private reporting](https://github.com/CourageToChange/LocalPhotoPDF/security/advisories/new) so it can be fixed before it is public. Details in [SECURITY.md](SECURITY.md).
 
-⚠️ Issues are public. **Do not attach a photo you would not want strangers to see** — describe the image instead (format, rough size, pixel dimensions).
+⚠️ Issues are public. **Do not attach a photo you would not want strangers to see.** Describe the image instead (format, rough size, pixel dimensions).
 
 Want to change something yourself? [CONTRIBUTING.md](CONTRIBUTING.md) covers building and testing. Small pull requests are easier to review than large ones, and an unfinished PR with a question attached is fine.
 
