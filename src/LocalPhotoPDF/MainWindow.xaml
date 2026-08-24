@@ -85,7 +85,7 @@
         <Border Grid.Row="1"
                 Margin="0,0,0,14"
                 Padding="14,11"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                Background="{DynamicResource CardBackgroundBrush}"
                 BorderBrush="{StaticResource AccentBrush}"
                 BorderThickness="1"
                 CornerRadius="8"
@@ -167,7 +167,7 @@
                             <TextBlock FontSize="18" FontWeight="SemiBold" Text="Photos" />
                             <Border Margin="9,1,0,0"
                                     Padding="7,2"
-                                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                                    Background="{DynamicResource SubtleBackgroundBrush}"
                                     CornerRadius="8">
                                 <TextBlock FontSize="12" Text="{Binding PhotoCountText}" />
                             </Border>
@@ -258,7 +258,7 @@
                                 <DataTemplate>
                                     <Border Padding="10"
                                             Background="Transparent"
-                                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                                            BorderBrush="{DynamicResource DecorativeBorderBrush}"
                                             BorderThickness="1"
                                             CornerRadius="8">
                                         <Grid>
@@ -274,7 +274,7 @@
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
                                                        FontSize="18"
-                                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}"
                                                        Text="⋮⋮"
                                                        ToolTip="Drag to reorder"
                                                        AutomationProperties.Name="Drag to reorder" />
@@ -282,7 +282,7 @@
                                             <Border Grid.Column="1"
                                                     Width="72"
                                                     Height="72"
-                                                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                                                    Background="{DynamicResource SubtleBackgroundBrush}"
                                                     CornerRadius="6"
                                                     ClipToBounds="True">
                                                 <Image Source="{Binding Thumbnail}"
@@ -378,7 +378,6 @@
                                Target="{Binding ElementName=PageSizeCombo}" />
                         <ComboBox x:Name="PageSizeCombo"
                                   ItemsSource="{Binding PageSizeChoices}"
-                                  DisplayMemberPath="Label"
                                   SelectedValuePath="Value"
                                   SelectedValue="{Binding PageSize}"
                                   AutomationProperties.Name="Page size" />
@@ -395,7 +394,6 @@
                                Target="{Binding ElementName=MarginCombo}" />
                         <ComboBox x:Name="MarginCombo"
                                   ItemsSource="{Binding MarginChoices}"
-                                  DisplayMemberPath="Label"
                                   SelectedValuePath="Value"
                                   SelectedValue="{Binding Margin}"
                                   AutomationProperties.Name="Page margin" />
@@ -412,7 +410,6 @@
                                Target="{Binding ElementName=QualityCombo}" />
                         <ComboBox x:Name="QualityCombo"
                                   ItemsSource="{Binding QualityChoices}"
-                                  DisplayMemberPath="Label"
                                   SelectedValuePath="Value"
                                   SelectedValue="{Binding Quality}"
                                   AutomationProperties.Name="Image quality" />
@@ -425,7 +422,7 @@
                     <Border Grid.Row="2"
                             Margin="0,22,0,0"
                             Padding="12"
-                            Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                            Background="{DynamicResource SubtleBackgroundBrush}"
                             CornerRadius="8">
                         <StackPanel>
                             <TextBlock FontWeight="SemiBold" Text="🔒  Private by design" />
@@ -523,6 +520,16 @@
                            Text="{Binding Update.UpdateStatus}"
                            Visibility="{Binding Update.HasUpdateStatus, Converter={StaticResource BooleanToVisibilityConverter}}"
                            AutomationProperties.LiveSetting="Polite" />
+
+                <Button x:Name="SettingsButton"
+                        MinWidth="110"
+                        Margin="0,0,10,0"
+                        Style="{StaticResource QuietButtonStyle}"
+                        Content="⚙  _Settings"
+                        Click="SettingsButton_Click"
+                        ToolTip="Theme, and where new PDFs are saved."
+                        AutomationProperties.Name="Settings"
+                        AutomationProperties.HelpText="Change the theme and the default folder for new PDFs." />
 
                 <Button MinWidth="150"
                         Style="{StaticResource QuietButtonStyle}"

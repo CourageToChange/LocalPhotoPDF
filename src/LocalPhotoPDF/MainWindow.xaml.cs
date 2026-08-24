@@ -240,14 +240,30 @@ public partial class MainWindow : Window
             OverwritePrompt = true,
             CheckPathExists = true,
             RestoreDirectory = true,
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            // Honours the user's default folder, falling back to Documents when it is unset or no
+            // longer exists. Resolved at the moment of use, never cached.
+            InitialDirectory = SettingsService.ResolveOutputDirectory(_settings),
             FileName = string.IsNullOrWhiteSpace(safeName) ? "photos.pdf" : $"{safeName}-photos.pdf",
         };
 
         if (dialog.ShowDialog(this) == true)
         {
             await _viewModel.GeneratePdfAsync(dialog.FileName);
+
+            // Reuse the existing command rather than calling the shell directly. It already
+            // handles the Explorer /select quoting trap and the "output no longer exists" case,
+            // and CanExecute is false when generation failed or was cancelled.
+            if (_settings.OpenFolderAfterExport && _viewModel.ShowInFolderCommand.CanExecute(null))
+            {
+                _viewModel.ShowInFolderCommand.Execute(null);
+            }
         }
+    }
+
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SettingsWindow(_settingsService, _settings) { Owner = this };
+        dialog.ShowDialog();
     }
 
     private void Window_Closing(object? sender, CancelEventArgs e)

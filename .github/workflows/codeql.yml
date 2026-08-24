@@ -15,10 +15,29 @@ permissions:
   contents: read
   packages: read
   security-events: write
+  # The CodeQL action reads its own workflow run to attach results to it. Without this the
+  # analysis completes, exports SARIF, and then dies on the upload with "Resource not
+  # accessible by integration" pointing at the workflow-runs API, which reads like a code
+  # problem rather than a missing permission.
+  actions: read
 
 jobs:
   analyze:
     name: Analyze C#
+    # Only run where code scanning can actually work, which is the public repository.
+    #
+    # This file lives in both repos, because the public tree is copied from the private one.
+    # GitHub code scanning is free on public repositories and requires paid Advanced Security
+    # on private ones, which this account does not have: enabling it returns
+    # "403 Code scanning is not enabled for this repository". So on the private repo the
+    # analysis ran perfectly, scanned all 25 C# files, exported SARIF, and then failed on
+    # upload every single time since at least 2026-08-15, sending a failure notification on
+    # every push for something that could never succeed.
+    #
+    # Skipping is the honest outcome rather than deleting the workflow: the public repo holds
+    # identical code and its CodeQL run passes, so the code IS scanned. If this repo ever goes
+    # public, or Advanced Security is ever bought, delete this condition and it resumes.
+    if: github.repository == 'CourageToChange/LocalPhotoPDF'
     runs-on: windows-latest
     timeout-minutes: 30
 

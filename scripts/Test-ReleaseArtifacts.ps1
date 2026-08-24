@@ -257,7 +257,15 @@ try {
         }
     }
 
+    # Report what actually ran. This line used to claim the installer lifecycle "passed"
+# even when -SkipInstallerLifecycle meant it never executed, which is the worst kind of
+# green: a gate reporting success for a check it did not perform.
+if ($SkipInstallerLifecycle) {
+    Write-Host 'Portable launch, checksums and SBOM checks passed.'
+    Write-Warning 'Installer lifecycle was SKIPPED (-SkipInstallerLifecycle). The install/uninstall cycle is UNVERIFIED for this build.'
+} else {
     Write-Host 'Portable launch, checksums, SBOM, and installer lifecycle checks passed.'
+}
 }
 finally {
     if ($hadPreexistingSettings -and (Test-Path -LiteralPath $settingsBackup -PathType Container)) {

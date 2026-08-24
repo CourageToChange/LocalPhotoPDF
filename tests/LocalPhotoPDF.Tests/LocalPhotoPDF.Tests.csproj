@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\LocalPhotoPDF.Core\LocalPhotoPDF.Core.csproj" />
+    <!-- The app project too, so settings behaviour can be tested without a window. -->
+    <ProjectReference Include="..\..\src\LocalPhotoPDF\LocalPhotoPDF.csproj" />
   </ItemGroup>
 
 </Project>

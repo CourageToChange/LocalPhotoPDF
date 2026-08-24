@@ -41,6 +41,11 @@ public partial class App : Application, IDisposable
 
         var settingsService = new SettingsService();
         var settings = settingsService.Load();
+
+        // Apply the palette before any window exists, so the very first paint is already correct
+        // and the user never sees a flash of the wrong theme.
+        ThemeService.Apply(settings.Theme);
+
         var viewModel = new MainViewModel(
             new WicImageImportService(),
             new PdfGenerationService(),

@@ -49,6 +49,26 @@ internal sealed class SettingsService
         }
     }
 
+    /// <summary>
+    /// The folder the Save dialog should open in, falling back to Documents.
+    /// </summary>
+    /// <remarks>
+    /// Resolved at the moment of use, never cached. A stored folder can be deleted, renamed, or
+    /// live on a drive that is not plugged in, so "it existed when the user picked it" is not a
+    /// guarantee that it exists now. Handing a dead path to a file dialog makes it open somewhere
+    /// unpredictable instead of failing, which is the kind of fault users blame on themselves.
+    /// </remarks>
+    public static string ResolveOutputDirectory(AppSettings? settings)
+    {
+        var configured = settings?.DefaultOutputDirectory;
+        if (!string.IsNullOrWhiteSpace(configured) && Directory.Exists(configured))
+        {
+            return configured;
+        }
+
+        return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    }
+
     public void Save(AppSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);

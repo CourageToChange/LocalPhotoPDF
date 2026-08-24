@@ -184,6 +184,12 @@
           "xunit.v3.runner.common": "[3.2.2]"
         }
       },
+      "localphotopdf": {
+        "type": "Project",
+        "dependencies": {
+          "LocalPhotoPDF.Core": "[1.0.0, )"
+        }
+      },
       "localphotopdf.core": {
         "type": "Project",
         "dependencies": {

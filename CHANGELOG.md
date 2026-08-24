@@ -7,6 +7,38 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-08-24
+
+### Fixed
+
+- **The Page size, Margin and Quality dropdowns showed nothing.** Open one and the list was
+  blank, though the options were still there and could still be chosen. That is worse than a
+  control that plainly does not work, because you could change a setting without being able to
+  read what you were changing.
+  One mistake caused this and the brightness complaint below. The app asked Windows for its
+  theme, then painted every surface with a much older set of Windows colours that are fixed to
+  light regardless of your theme. The two ignore each other. On a PC set to dark mode the window
+  forced itself bright while the dropdown list stayed dark and took its text colour from the
+  window, so the text came out black on a near black background. Measured, that is a contrast
+  ratio of 1.48 to 1, where readable text needs 4.5 to 1. Dropdown text now measures 11.44 to 1.
+  Every colour in the app is now checked against that requirement by a test, so this particular
+  fault cannot come back quietly.
+
+- **Screen readers now read the dropdown options properly.** They previously announced the
+  internal record behind each option, so instead of hearing "A4, automatic orientation" you would
+  hear something closer to `OptionChoice { Value = A4, Label = A4 ... }`. Each option now announces
+  its name, and its explanation is available as help text. The dropdowns looked entirely correct on
+  screen while this was happening, which is why it went unnoticed.
+
+### Added
+
+- **Dark mode, and it is on by default.** Light mode is one click away in Settings.
+- **A Settings screen.** Choose a folder to save PDFs to, so the save dialog opens where you
+  actually keep things instead of Documents every time. Switch theme, with the change previewed
+  live and undone if you press Cancel. Optionally open the containing folder when an export
+  finishes. Your choices are remembered between sessions, in the same local settings file the
+  app already used, and nothing is sent anywhere.
+
 ## [1.0.0] — 2026-08-16
 
 First public release.
@@ -59,4 +91,5 @@ package a binary containing that path.
 
 I would rather have that written down than not.
 
+[1.1.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.0
 [1.0.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.0.0

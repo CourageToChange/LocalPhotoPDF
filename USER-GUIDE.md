@@ -43,6 +43,30 @@ Choose **None**, **5 mm**, or **10 mm**. The default is **5 mm**. A larger margi
 - **Balanced** is the default and suits most photos and screenshots.
 - **Small** reduces the PDF size more strongly.
 
+## Settings
+
+Press **Settings** at the bottom right of the window. Your choices are saved and used again next
+time you open the app.
+
+### Appearance
+
+LocalPhotoPDF uses a dark theme. Choose **Light** if you prefer a bright window. The change is
+shown straight away, and pressing **Cancel** puts it back the way it was.
+
+### Where PDFs are saved
+
+By default the save window opens in your Documents folder. Set a folder here and it will open
+there instead, which saves you navigating to the same place every time. You can still choose a
+different folder when you save.
+
+### After a PDF is made
+
+Turn on **Open the containing folder** if you want File Explorer to open at your new PDF as soon
+as it is finished.
+
+Nothing in Settings is sent anywhere. Your choices are kept in a small file on your own PC, in the
+same place the app already stored your page size and margin.
+
 ## Supported photos
 
 LocalPhotoPDF supports JPEG, PNG, BMP, GIF, TIFF, and JPEG XR through Windows. It can also use optional Windows codecs installed for formats such as HEIC, WebP, AVIF, and camera RAW.

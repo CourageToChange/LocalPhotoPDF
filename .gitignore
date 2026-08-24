@@ -20,3 +20,6 @@ Thumbs.db
 # correspondence and are not part of the published project.
 REVIEW-*.md
 *-REVIEW-*.md
+
+# Local measurement output from scripts/Measure-Baseline.ps1
+baseline.json
