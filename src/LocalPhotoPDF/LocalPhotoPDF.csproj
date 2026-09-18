@@ -11,6 +11,29 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\LocalPhotoPDF.ico</ApplicationIcon>
+    <!--
+      Pinned 2026-09-18 for v1.1.1, and it lives HERE rather than in Directory.Build.props
+      because it is a property of THIS deliverable, not of the repository.
+
+      Why the pin exists: LocalPhotoPDF publishes SELF-CONTAINED, so a user runs the runtime that
+      was bundled at build time and can never receive a servicing patch on their own. SDK 10.0.303
+      reports itself up to date and still resolves 10.0.11 runtime packs, so leaving this implicit
+      ships a runtime one patch behind for the life of the release.
+
+      🔴 WHY IT IS NOT IN Directory.Build.props, WHICH IS WHERE IT WAS FIRST PUT AND IT BROKE THE
+      BUILD. A property there applies to EVERY project, including LocalPhotoPDF.Tests. That
+      project is framework-DEPENDENT, so pinning it made testhost.exe demand a 10.0.12 runtime
+      INSTALLED ON THE MACHINE, where only 10.0.11 is present and no released SDK carries 10.0.12.
+      The whole suite aborted with "You must install or update .NET to run this application".
+      🔑 The two projects get their runtime from opposite places: this one from NuGet at publish
+      time, the test project from the machine at run time. Only the first can be pinned, so only
+      the first is.
+
+      Test-RuntimeServicing.ps1 and the SBOM step both read src\LocalPhotoPDF\obj\project.assets.json
+      specifically, so both still see this pin. When that guard next goes red, bump this and cut a
+      release. Do not delete the pin to silence it, and do not move it up to Directory.Build.props.
+    -->
+    <RuntimeFrameworkVersion>10.0.12</RuntimeFrameworkVersion>
   </PropertyGroup>
 
 </Project>

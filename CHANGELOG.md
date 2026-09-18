@@ -7,6 +7,21 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.1] — 2026-09-18
+
+### Security
+
+- **The bundled .NET runtime moves from 10.0.12's predecessor up to 10.0.12.** Nothing in the app
+  itself changed, and nobody reported a problem. LocalPhotoPDF is self contained, which means you
+  run the runtime that was packaged with the download rather than whatever is installed on your
+  PC, so a runtime patch cannot reach you through Windows Update. The only way you get it is a new
+  release, and that is what this is.
+
+  A scheduled check in the repository is what noticed. Its entire job is to compare the runtime
+  inside the last release against the newest one Microsoft has published, and it went red on its
+  own months after 1.1.0 shipped. Fixing what it found took an afternoon. Noticing it without that
+  check would have taken somebody thinking to look.
+
 ## [1.1.0] — 2026-08-24
 
 ### Fixed
@@ -91,5 +106,6 @@ package a binary containing that path.
 
 I would rather have that written down than not.
 
+[1.1.1]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.1
 [1.1.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.0
 [1.0.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.0.0

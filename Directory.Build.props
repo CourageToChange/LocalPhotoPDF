@@ -17,6 +17,19 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!--
+      ⛔ RuntimeFrameworkVersion DELIBERATELY DOES NOT LIVE HERE. It is set in
+      src\LocalPhotoPDF\LocalPhotoPDF.csproj, which carries the full reasoning.
+
+      It was put here first, on 2026-09-18, and it broke the build within the hour. A property in
+      this file applies to EVERY project including LocalPhotoPDF.Tests, which is framework-
+      dependent: pinning it made testhost.exe demand a runtime installed on the machine that no
+      released SDK ships, and the entire suite aborted before a single test ran.
+
+      The app bundles its runtime from NuGet at publish time; the test project takes its runtime
+      from the machine at run time. Pinning is correct for the first and impossible for the second,
+      so the pin belongs to the project, not the repository.
+    -->
     <NuGetAudit>true</NuGetAudit>
     <NuGetAuditMode>all</NuGetAuditMode>
     <NuGetAuditLevel>moderate</NuGetAuditLevel>
