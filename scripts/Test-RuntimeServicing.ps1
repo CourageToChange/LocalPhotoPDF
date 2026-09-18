@@ -68,13 +68,57 @@ if ($checkOutput -notmatch $sdkPattern) {
     throw "The pinned .NET SDK $expectedSdkVersion is not reported as up to date. Update global.json and revalidate the release."
 }
 
+# Corrected 2026-09-18. This used to require a line reading
+#   "<RuntimeName> <BundledVersion> Up to date."
+# in the `dotnet sdk check` output. That output lists the runtimes INSTALLED ON THIS MACHINE,
+# and a self-contained app's bundled runtime comes from NuGet, so it has no reason to be
+# installed locally. The two only coincide when a newer runtime is obtained by installing a
+# newer SDK.
+#
+# After pinning RuntimeFrameworkVersion to 10.0.12 the old check failed with "the bundled
+# Microsoft.NETCore.App 10.0.12 runtime is not reported as up to date" while 10.0.12 IS the
+# latest patch and is exactly what we ship. A false failure.
+#
+# The question this guard exists to ask is "is the runtime we SHIP behind the latest patch?",
+# so that is what it now asks: derive the latest available patch per family from the same
+# output, and require the bundled version to equal it.
+#   - a row saying "Patch X is available" means the latest is X
+#   - a row saying "Up to date" means the latest is that row's own version
+#
+# This is STRICTER than before in the case that matters: it fails whenever the bundled runtime
+# is behind, regardless of what happens to be installed. Proven by pinning 10.0.11 and watching
+# it go red.
 foreach ($runtime in $expectedRuntimes.GetEnumerator()) {
-    $runtimePattern = '(?m)^\s*{0}\s+{1}\s+Up to date\.\s*$' -f (
-        [Regex]::Escape([string] $runtime.Key),
-        [Regex]::Escape([string] $runtime.Value))
-    if ($checkOutput -notmatch $runtimePattern) {
-        throw "The bundled $($runtime.Key) $($runtime.Value) runtime is not reported as up to date. Restore with a serviced SDK before releasing."
+    $family = [string] $runtime.Key
+    $bundled = [string] $runtime.Value
+
+    $latest = $null
+    $patchPattern = '(?m)^\s*{0}\s+(\S+)\s+Patch\s+(\S+)\s+is available\.\s*$' -f `
+        [Regex]::Escape($family)
+    $uptodatePattern = '(?m)^\s*{0}\s+(\S+)\s+Up to date\.\s*$' -f [Regex]::Escape($family)
+
+    foreach ($m in [Regex]::Matches($checkOutput, $patchPattern)) {
+        $candidate = $m.Groups[2].Value
+        if ($null -eq $latest -or ([version] $candidate) -gt ([version] $latest)) {
+            $latest = $candidate
+        }
     }
+    foreach ($m in [Regex]::Matches($checkOutput, $uptodatePattern)) {
+        $candidate = $m.Groups[1].Value
+        if ($null -eq $latest -or ([version] $candidate) -gt ([version] $latest)) {
+            $latest = $candidate
+        }
+    }
+
+    if ($null -eq $latest) {
+        throw "Could not determine the latest available patch for $family from 'dotnet sdk check'. Refusing to certify the release on an absent measurement."
+    }
+
+    if (([version] $bundled) -lt ([version] $latest)) {
+        throw "The bundled $family $bundled runtime is BEHIND the latest available patch $latest. Bump RuntimeFrameworkVersion in Directory.Build.props, restore, and cut a release."
+    }
+
+    Write-Host ("  {0}: bundling {1}, latest available {2}" -f $family, $bundled, $latest)
 }
 
 Write-Host 'The pinned SDK and bundled runtime packs are on the current servicing level.'
