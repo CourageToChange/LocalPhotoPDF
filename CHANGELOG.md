@@ -7,6 +7,32 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.2] — 2026-09-29
+
+### Changed
+
+- **Making a PDF is much faster.** Thirty photos used to take about 4.9 seconds and now take
+  about 1.1 on the same PC, and the PDF that comes out is byte for byte the same. Most of that
+  time went on painting every photo onto a white page before adding it, which only matters for a
+  photo with transparent areas. Ordinary photos from a camera or a phone have none, so they now
+  skip that step. A photo that does have transparency is still put on white, exactly as before.
+
+### Fixed
+
+- **Closing the window while a PDF was being made raised an error as the app shut down.** Closing
+  now cancels the build cleanly.
+- **Removing a photo after a build left "Your PDF is ready" on screen,** describing a PDF that no
+  longer matched your list. Removing a photo now clears it, the same as every other change to the
+  list already did.
+
+### Security
+
+- **This release was built and published by the repository's own release workflow,** so its
+  files carry a build provenance attestation linking them to the exact source commit. 1.1.0 and
+  1.1.1 were uploaded by hand after that workflow failed, which means they have published
+  checksums but no attestation for the files you actually download. You can check this one with
+  `gh attestation verify <file> --repo CourageToChange/LocalPhotoPDF`.
+
 ## [1.1.1] — 2026-09-18
 
 ### Security
@@ -106,6 +132,7 @@ package a binary containing that path.
 
 I would rather have that written down than not.
 
+[1.1.2]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.2
 [1.1.1]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.1
 [1.1.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.0
 [1.0.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.0.0

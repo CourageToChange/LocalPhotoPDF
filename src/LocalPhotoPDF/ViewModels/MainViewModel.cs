@@ -460,7 +460,11 @@ internal sealed class MainViewModel : ObservableObject, IDisposable
         }
         finally
         {
-            _generationCancellation.Dispose();
+            // Null-conditional on purpose: Dispose() runs when the window closes and sets
+            // this field to null, so a build still in flight reaches here with nothing to
+            // dispose. The compiler cannot see that, because the field is assigned before
+            // use inside this method.
+            _generationCancellation?.Dispose();
             _generationCancellation = null;
             IsGenerating = false;
         }
@@ -550,7 +554,10 @@ internal sealed class MainViewModel : ObservableObject, IDisposable
         Photos.RemoveAt(oldIndex);
         _photoPaths.Remove(photo.FilePath);
         SelectedPhoto = Photos.Count == 0 ? null : Photos[Math.Min(oldIndex, Photos.Count - 1)];
-        LastOutputPath = null;
+        // Every other edit goes through this helper, which also takes down the "Your PDF is
+        // ready" banner. This path used to clear LastOutputPath directly and leave the
+        // banner announcing a PDF that no longer matched the list.
+        InvalidateOutput();
         ReindexPhotos();
         NotifyPhotoCollectionChanged();
     }

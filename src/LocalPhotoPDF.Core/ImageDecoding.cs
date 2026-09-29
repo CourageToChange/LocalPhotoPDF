@@ -111,6 +111,11 @@ internal static class ImageDecoding
                 $"The photo exceeds the {MaximumPixelCount / 1_000_000} megapixel safety limit.");
         }
 
+        // Read BEFORE the sRGB conversion. Everything below lands in Bgra32 whether the photo had
+        // an alpha channel or not, so the converted format cannot answer this question and the
+        // original frame's format is the only place the answer survives.
+        var sourceIsOpaque = IsOpaqueFormat(frame.Format);
+
         var orientation = ReadExifOrientation(frame.Metadata as BitmapMetadata);
         var swapsAxes = orientation is >= 5 and <= 8;
         var displayWidth = swapsAxes ? frame.PixelHeight : frame.PixelWidth;
@@ -127,7 +132,8 @@ internal static class ImageDecoding
             GetFormatName(decoder),
             displayWidth,
             displayHeight,
-            source);
+            source,
+            sourceIsOpaque);
     }
 
     internal static BitmapSource ApplyManualRotation(BitmapSource source, int rotationDegrees)
@@ -375,6 +381,23 @@ internal static class ImageDecoding
         return fallback;
     }
 
+    // An allowlist, not a test for the absence of an alpha mask. Indexed formats carry their
+    // transparency in the palette rather than in the pixel format, so a mask count would call
+    // them opaque and be wrong. Anything not named here is treated as possibly transparent,
+    // which costs a composite that was going to happen anyway.
+    private static bool IsOpaqueFormat(PixelFormat format) =>
+        format == PixelFormats.Bgr24
+        || format == PixelFormats.Rgb24
+        || format == PixelFormats.Bgr32
+        || format == PixelFormats.Bgr555
+        || format == PixelFormats.Bgr565
+        || format == PixelFormats.Rgb48
+        || format == PixelFormats.Gray2
+        || format == PixelFormats.Gray4
+        || format == PixelFormats.Gray8
+        || format == PixelFormats.Gray16
+        || format == PixelFormats.BlackWhite;
+
     private static WriteableBitmap Materialize(BitmapSource source)
     {
         // WriteableBitmap copies the scaled pixels into its own backing store. This
@@ -411,4 +434,5 @@ internal sealed record DecodedPhoto(
     string Format,
     int PixelWidth,
     int PixelHeight,
-    BitmapSource Bitmap);
+    BitmapSource Bitmap,
+    bool SourceIsOpaque = false);
