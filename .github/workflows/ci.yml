@@ -72,6 +72,10 @@ jobs:
         shell: pwsh
         run: choco install nsis --version=3.12.0 --yes --no-progress
 
+      - name: Test installer against planted junctions
+        shell: pwsh
+        run: .\scripts\Test-InstallerLinks.ps1
+
       - name: Build release artifacts
         shell: pwsh
         run: .\scripts\Build-Release.ps1 -Version 1.0.0

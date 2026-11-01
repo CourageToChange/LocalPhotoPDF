@@ -52,6 +52,10 @@ jobs:
         # the installer people are asked to trust.
         run: choco install nsis --version=3.12.0 --yes --no-progress --allow-downgrade --require-checksums
 
+      - name: Test installer against planted junctions
+        shell: pwsh
+        run: .\scripts\Test-InstallerLinks.ps1
+
       - name: Build release packages
         shell: pwsh
         run: .\scripts\Build-Release.ps1 -Version '${{ steps.version.outputs.value }}'

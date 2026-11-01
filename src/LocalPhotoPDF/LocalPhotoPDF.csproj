@@ -33,7 +33,7 @@
       specifically, so both still see this pin. When that guard next goes red, bump this and cut a
       release. Do not delete the pin to silence it, and do not move it up to Directory.Build.props.
     -->
-    <RuntimeFrameworkVersion>10.0.12</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>10.0.14</RuntimeFrameworkVersion>
   </PropertyGroup>
 
 </Project>

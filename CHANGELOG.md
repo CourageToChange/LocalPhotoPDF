@@ -5,7 +5,27 @@ All notable changes to LocalPhotoPDF are recorded here.
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html), and the format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.1.3] — 2026-11-01
+
+### Fixed
+
+- **An update that failed part way could leave LocalPhotoPDF half old and half new.** Setup
+  wrote the new files straight over the installed ones, so if it stopped part way through, for
+  example because another program had one of the files open, some files were the new version
+  and some the old. Setup now writes the new version into a separate folder first and swaps it
+  in only once every file is there. If anything goes wrong before that, your installed copy is
+  left exactly as it was.
+
+### Changed
+
+- **Setup no longer runs as administrator.** LocalPhotoPDF installs for your own Windows
+  account, so setup never needed it. If you start it that way it now stops and says so, without
+  changing anything.
+
+### Security
+
+- **The bundled .NET runtime moves from 10.0.12 up to 10.0.14.** LocalPhotoPDF carries its own
+  copy of the runtime, so a runtime patch can only reach you through a new release.
 
 ## [1.1.2] — 2026-09-29
 
@@ -132,6 +152,7 @@ package a binary containing that path.
 
 I would rather have that written down than not.
 
+[1.1.3]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.3
 [1.1.2]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.2
 [1.1.1]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.1
 [1.1.0]: https://github.com/CourageToChange/LocalPhotoPDF/releases/tag/v1.1.0

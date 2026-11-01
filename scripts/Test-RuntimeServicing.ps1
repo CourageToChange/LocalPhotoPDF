@@ -115,7 +115,7 @@ foreach ($runtime in $expectedRuntimes.GetEnumerator()) {
     }
 
     if (([version] $bundled) -lt ([version] $latest)) {
-        throw "The bundled $family $bundled runtime is BEHIND the latest available patch $latest. Bump RuntimeFrameworkVersion in Directory.Build.props, restore, and cut a release."
+        throw "The bundled $family $bundled runtime is BEHIND the latest available patch $latest. Bump RuntimeFrameworkVersion in srcocalphotopdfocalphotopdf.csproj, restore, and cut a release."
     }
 
     Write-Host ("  {0}: bundling {1}, latest available {2}" -f $family, $bundled, $latest)
