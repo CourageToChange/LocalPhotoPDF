@@ -4,9 +4,9 @@
     "net10.0-windows7.0": {
       "PDFsharp-WPF": {
         "type": "Direct",
-        "requested": "[6.2.4, )",
-        "resolved": "6.2.4",
-        "contentHash": "wD2byoUNGc/IDmSSSPLGGCNMXf4TybnjKlcYa40nuWIYLVA4DSvnCvWr7HbsBEwFvAYRP6DceQ4MN35COD/pdw==",
+        "requested": "[6.5.0, )",
+        "resolved": "6.5.0",
+        "contentHash": "jUL2mcDP+WIhAGNg95FxUIPzeRufIX3b7A3ufGM1aysyny3CjPWTTTld/mQnWWxxGKIP2ZIUZk3M+6pQj3xOhw==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
         }
